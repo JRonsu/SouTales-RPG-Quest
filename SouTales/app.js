@@ -24,3 +24,25 @@ image.onload = () => {
 }
 
 // background created 
+
+// add and position character in game background
+const playerImage = new Image();
+playerImage.src = './Images/Run.png'
+
+playerImage.onload = () => {
+    c.drawImage(image, 0, -120)
+
+    c.drawImage(
+        // in short i am just cropping, I played around with it, it works IDK
+        playerImage,
+        0, 
+        0, 
+        playerImage.width / 6, // seperate the 1 animation
+        playerImage.height,
+        
+        canvas.width /2 - playerImage.width /1, // change width posiont ( Xposition)
+        canvas.height /2 - playerImage.height /2,
+        playerImage.width /3,
+        playerImage.height
+    )
+}
