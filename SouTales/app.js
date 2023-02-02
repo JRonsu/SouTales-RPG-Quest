@@ -12,27 +12,18 @@ c.fillStyle = 'white'
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 // create a new instance of Image object and set it to the variable image
-const image = new Image()
-// set the source of the image to the given path
-image.src = './Images/Level1 Grass plane.png'
-// log the image object to the console
-console.log(image)
+const backgroundImage = new Image()
+backgroundImage.src = './Images/Level1 Grass plane.png'
+console.log(backgroundImage)
 
-// set the onload event for the image object to be triggered when the image has finished loading
-image.onload = () => {
-    // draw the image on the 2D rendering context c at position (0, 0)
-    c.drawImage(image, 0, 0)
+backgroundImage.onload = () => {
+    c.drawImage(backgroundImage, 0, 0)
 }
 
-//
-// create a new instance of Image object for the player character and set it to the variable playerImage
 const playerImage = new Image()
-// set the source of the player image to the given path
 playerImage.src = './Images/Run.png'
 
-// create a class Sprite to define a sprite in the game
 class Sprite {
-    // in the constructor, set the position, velocity, and image properties
     constructor({
         position,
         velocity,
@@ -44,20 +35,11 @@ class Sprite {
         this.frames = {...frames, val: 0, elapsed: 0}
 
         this.image.onload = () => {
-            this.width = this.image.width / this.frames.max
+            this.width = this.image.width
             this.height = this.image.height
         }
         this.moving = false
     }
-    
-    update() {
-        if (this.frames.val < this.frames.max - 1) {
-            this.frames.val++
-        } else {
-            this.frames.val = 0
-        }
-    }
-
 
     draw() {
         let frame = 0
@@ -69,41 +51,18 @@ class Sprite {
             this.height,
             this.position.x,
             this.position.y,
-            this.width * 0.9,// the cropping of the canvas
+            this.width * 1,
             this.height
         );
-
-        if (this.moving) {
-            if (this.frames.max > 8) {
-                this.frames.elapsed++
-            }
-        }
-        if (this.frames.elapsed % 10 === 0) {
-            if (this.frames.val < this.frames.max) this.frames.val++;
-            else this.frames.val = 0
-        }
     }
 }
 
-
-
-// create an new instance of the Sprite class for the background and set it to the variable background
 const background = new Sprite({
     position: {
         x: 0,
         y: -120,
     },
-    image: image
-})
-
-// create an new instance of the Sprite class for the player and set it to the variable player
-const player = new Sprite({
-    position: {
-        x: canvas.width / 3 - playerImage.width / 2,
-        y: canvas.height / 2 - playerImage.height / 2,
-    },
-    image: playerImage,
-    frames: {max: 7}
+    image: backgroundImage
 })
 
 const keys = {
@@ -114,28 +73,12 @@ const keys = {
     d: {
         pressed: false
     }, 
-
-    ArrowLeft: {
-        pressed: false
-    }, 
-
-    ArrowRight: {
-        pressed: false
-    }, 
-
-
 }
 
-// function to animate the sprite
 function animate() {
-    // request animation frame for the window to update the animation
     window.requestAnimationFrame(animate)
-    // log a message to the console for debugging purposes
     console.log('animate')
-    // call the draw method on the background sprite
     background.draw()
-    player.update()
-    player.draw()
     
     if (keys.d.pressed && lastKey === 'd') {
         if (background.position.x > -canvas.width / 2) {
@@ -148,15 +91,8 @@ function animate() {
     }
 }
 
-
-
-// call the animate function to start the animation
 animate()
 
-
-// add the animation to the sprite run animation
-
-// Key functions
 let lastKey = ''
 window.addEventListener("keydown", (e) => {
     switch (e.key) {
@@ -168,16 +104,6 @@ window.addEventListener("keydown", (e) => {
         case 'd':
             keys.d.pressed = true;
             lastKey = 'd'
-            break
-
-        case 'ArrowLeft':
-            keys.ArrowLeft.pressed = true;
-            lastKey = 'ArrowLeft'
-            break
-
-        case 'ArrowRight':
-            keys.ArrowRight.pressed = true;
-            lastKey = 'ArrowRight'
             break
     }
     console.log(keys);
@@ -192,14 +118,24 @@ window.addEventListener("keyup", (e) => {
         case 'd':
             keys.d.pressed = false;
             break
-
-        case 'ArrowLeft':
-            keys.ArrowLeft.pressed = false;
-            break
-
-        case 'ArrowRight':
-            keys.ArrowRight.pressed = false;
-            break
     }
-    console.log(keys);
-})
+});
+
+// move the sprite
+// move the sprite
+const sprite = document.querySelector(".sprite");
+
+document.addEventListener("keydown", (event) => {
+  if (event.code === "KeyD") {
+    sprite.style.left = `${parseInt(sprite.style.left) + 10}px`;
+    sprite.style.animation = "sprite-animation 1s steps(7) infinite";
+  } else if (event.code === "KeyA") {
+    sprite.style.left = `${parseInt(sprite.style.left) - 10}px`;
+  }
+});
+
+document.addEventListener("keyup", (event) => {
+  if (event.code === "KeyD") {
+    sprite.style.animation = "";
+  }
+});
